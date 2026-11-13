@@ -12,9 +12,9 @@ Tra cứu nhanh: [quản lý tài khoản](docs/ADMIN_ACCOUNTS.md), [hồ sơ v�
 
 | Môi trường | Địa chỉ | Ghi chú |
 |------------|---------|---------|
-| Production (Vercel) | https://tutoring-platform-pi-beige.vercel.app | Frontend + API chung một domain |
-| Health check (production) | https://tutoring-platform-pi-beige.vercel.app/api/health | Kiểm tra backend; không thay kiểm chứng đăng nhập/database |
-| API docs (production) | https://tutoring-platform-pi-beige.vercel.app/api/docs | Danh sách endpoint rút gọn, không phải OpenAPI đầy đủ |
+| Production (Vercel) | https://eklassesidvn.vercel.app/ | Frontend + API chung một domain |
+| Health check (production) | https://eklassesidvn.vercel.app/api/health | Kiểm tra backend; không thay kiểm chứng đăng nhập/database |
+| API docs (production) | https://eklassesidvn.vercel.app/api/docs | Danh sách endpoint rút gọn, không phải OpenAPI đầy đủ |
 | Local frontend | `http://localhost:3000` | Chạy bằng `npm start --prefix frontend` |
 | Local backend | `http://localhost:5000` | Chạy bằng `npm run dev --prefix backend` |
 | Health check (local) | `http://localhost:5000/api/health` | Phải trả về `{"status":"ok"}` |
