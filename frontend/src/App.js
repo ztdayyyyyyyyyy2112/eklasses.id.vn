@@ -1,0 +1,156 @@
+// ============================================================================
+// FILE: frontend/src/App.js
+// MỤC ĐÍCH: Component gốc của toàn bộ website EKLASSES.
+// - Quản lý trạng thái đăng nhập (token + role trong localStorage).
+// - Định nghĩa hệ thống Route: /login, /register, /dashboard, /class/:id...
+// - Hiển thị Navbar khi đã đăng nhập + nền watermark trang trí.
+// ============================================================================
+
+// Nạp React và 2 hook: useState (biến trạng thái) + useEffect (chạy 1 lần khi mở web).
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+// Nạp các công cụ điều hướng: Router (bao toàn app), Routes/Route (khai báo đường dẫn),
+// Navigate (tự chuyển hướng).
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+// Nạp CSS chung cho toàn web.
+import './styles/App.css';
+// Nạp cấu hình axios (tự gắn token vào mọi request). Chỉ cần import để kích hoạt.
+import './config/api';
+
+// Nạp các trang (Pages) tương ứng từng đường dẫn.
+import LoginPage from './pages/LoginPage'; // trang đăng nhập /login.
+import RegisterPage from './pages/RegisterPage'; // trang đăng ký /register.
+import PoliciesPage from './pages/PoliciesPage';
+
+// Nạp thanh điều hướng trên cùng.
+import Navbar from './components/Navbar';
+import RouteBoundary from './components/RouteBoundary';
+
+// Tách bundle theo màn hình, không tải trang quản trị/chi tiết lớp khi mới đăng nhập.
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AdminModeration = lazy(() => import('./pages/AdminModeration'));
+const AdminAccounts = lazy(() => import('./pages/AdminAccounts'));
+const AdminClassDetail = lazy(() => import('./pages/AdminClassDetail'));
+const ClassDetail = lazy(() => import('./pages/ClassDetail'));
+const QuizTaking = lazy(() => import('./pages/QuizTaking'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const AppealPage = lazy(() => import('./pages/AppealPage'));
+
+// Trang xác thực đã có logo và điều hướng riêng; không dựng navbar ở hai trang này.
+const RouteNavbar = (props) => {
+  const { pathname } = useLocation();
+  const route = pathname.replace(/\/+$/, '').toLowerCase();
+  return route === '/login' || route === '/register' ? null : <Navbar {...props} />;
+};
+
+// Component App: bao toàn bộ website.
+const App = () => {
+  // State isAuthenticated: true nếu có token trong localStorage (đã đăng nhập).
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  // State userRole: 'student' | 'teacher' | 'admin', dùng để phân quyền hiển thị.
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole'));
+
+  // useEffect chạy 1 lần khi mở web: đồng bộ lại state từ localStorage
+  // (phòng khi user F5 hoặc mở tab mới, state React mất nhưng storage còn).
+  useEffect(() => {
+    // Đọc token đã lưu.
+    const token = localStorage.getItem('token');
+    // Đọc role đã lưu.
+    const role = localStorage.getItem('userRole');
+    // Cập nhật state: có token = đã đăng nhập.
+    setIsAuthenticated(!!token);
+    setUserRole(role);
+  }, []); // mảng rỗng = chỉ chạy 1 lần lúc mount.
+
+  // HÀM: handleLogin(token, role) - được LoginPage/RegisterPage gọi sau khi API thành công.
+  // - Lưu token + role vào localStorage để giữ đăng nhập.
+  // - Cập nhật state để App vẽ lại (hiện Navbar + cho vào /dashboard).
+  const handleLogin = (token, role) => {
+    localStorage.setItem('token', token); // lưu JWT.
+    localStorage.setItem('userRole', role); // lưu vai trò.
+    setIsAuthenticated(true); // đánh dấu đã đăng nhập.
+    setUserRole(role); // lưu role vào state.
+  };
+
+  // HÀM: handleLogout() - được Navbar gọi khi bấm "Đăng xuất".
+  // - Xóa sạch token/userRole/userId khỏi localStorage.
+  // - Reset state về chưa đăng nhập để App đá về /login.
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
+    setIsAuthenticated(false);
+    setUserRole(null);
+  };
+
+  // Mảng ảnh watermark nền trang trí (icon mờ chìm dưới nội dung).
+  // Mỗi phần tử gồm src ảnh + class CSS quy định vị trí (wm-1...wm-9).
+  const watermarks = [
+    { src: '/icon1.png', className: 'wm wm-1' },
+    { src: '/icon2.png', className: 'wm wm-2' },
+    { src: '/centerlogo.png', className: 'wm wm-3' },
+    { src: '/icon1.png', className: 'wm wm-4' },
+    { src: '/icon2.png', className: 'wm wm-5' },
+    { src: '/centerlogo.png', className: 'wm wm-6' },
+    { src: '/icon1.png', className: 'wm wm-7' },
+    { src: '/icon2.png', className: 'wm wm-8' },
+    { src: '/centerlogo.png', className: 'wm wm-9' },
+  ];
+
+  return (
+    // Router bao toàn app để dùng điều hướng không tải lại trang.
+    <Router>
+      <div className="page-shell">
+        {/* Lớp nền watermark: vẽ 9 ảnh mờ, aria-hidden để máy đọc màn hình bỏ qua. */}
+        <div className="page-watermarks" aria-hidden="true">
+          {/* Duyệt mảng watermarks, vẽ mỗi ảnh 1 thẻ img. */}
+          {watermarks.map((item, index) => (
+            <img key={`${item.src}-${index}`} src={item.src} className={item.className} alt="" />
+          ))}
+        </div>
+
+        {/* Trang đăng nhập/đăng ký dùng toàn màn hình; các route còn lại giữ navbar hiện có. */}
+        <RouteNavbar userRole={userRole} onLogout={handleLogout} isAuthenticated={isAuthenticated} />
+        {/* Khai báo các Route của web. */}
+        <RouteBoundary>
+        <Suspense fallback={<main className="main-content" role="status">Đang tải màn hình...</main>}>
+        <Routes>
+          {/* Trang đăng nhập: truyền handleLogin để lưu token sau khi login API thành công. */}
+          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          {/* Trang đăng ký: tương tự, đăng ký xong tự đăng nhập luôn. */}
+          <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
+          <Route path="/policies" element={<PoliciesPage />} />
+
+          {/* Nếu ĐÃ đăng nhập thì cho vào các trang cần bảo vệ... */}
+          {isAuthenticated ? (
+            <>
+              {/* Dashboard: truyền userRole để hiện "Tất cả lớp / Lớp của tôi / Lớp đã tham gia". */}
+              <Route path="/admin" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/admin/moderation" element={userRole === 'admin' ? <AdminModeration /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/admin/accounts" element={userRole === 'admin' ? <AdminAccounts /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/admin/classes/:id" element={userRole === 'admin' ? <AdminClassDetail /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <Dashboard userRole={userRole} />} />
+              {/* Mọi vai trò hợp lệ đều được quản lý hồ sơ và mật khẩu chính chủ. */}
+              <Route path="/profile" element={['student', 'teacher', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
+              <Route path="/appeals" element={['student', 'teacher'].includes(userRole) ? <AppealPage /> : <Navigate to="/dashboard" replace />} />
+              {/* Chi tiết lớp: :id là _id lớp trên URL. */}
+              <Route path="/class/:id" element={<ClassDetail />} />
+              {/* Làm bài quiz: :quizId là _id đề thi. */}
+              <Route path="/quiz/:quizId/take" element={<QuizTaking />} />
+              {/* Vào / thì tự đá sang /dashboard. */}
+              <Route path="/" element={<Navigate to={userRole === 'admin' ? '/admin' : '/dashboard'} replace />} />
+            </>
+          ) : (
+            // Nếu CHƯA đăng nhập mà vào bất kỳ đường nào khác thì đá về /login.
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
+        </Routes>
+        </Suspense>
+        </RouteBoundary>
+      </div>
+    </Router>
+  );
+};
+
+// Xuất App để index.js render ra màn hình.
+export default App;
