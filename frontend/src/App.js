@@ -35,6 +35,9 @@ const ClassDetail = lazy(() => import('./pages/ClassDetail'));
 const QuizTaking = lazy(() => import('./pages/QuizTaking'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const AppealPage = lazy(() => import('./pages/AppealPage'));
+const ParentDashboard = lazy(() => import('./pages/ParentDashboard'));
+const TutorWorkspace = lazy(() => import('./pages/TutorWorkspace'));
+const TutorDetailPage = lazy(() => import('./pages/TutorDetailPage'));
 
 // Trang xác thực đã có logo và điều hướng riêng; không dựng navbar ở hai trang này.
 const RouteNavbar = (props) => {
@@ -120,6 +123,7 @@ const App = () => {
           {/* Trang đăng ký: tương tự, đăng ký xong tự đăng nhập luôn. */}
           <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
           <Route path="/policies" element={<PoliciesPage />} />
+          <Route path="/tutors/:id" element={<TutorDetailPage />} />
 
           {/* Nếu ĐÃ đăng nhập thì cho vào các trang cần bảo vệ... */}
           {isAuthenticated ? (
@@ -129,9 +133,10 @@ const App = () => {
               <Route path="/admin/moderation" element={userRole === 'admin' ? <AdminModeration /> : <Navigate to="/dashboard" replace />} />
               <Route path="/admin/accounts" element={userRole === 'admin' ? <AdminAccounts /> : <Navigate to="/dashboard" replace />} />
               <Route path="/admin/classes/:id" element={userRole === 'admin' ? <AdminClassDetail /> : <Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <Dashboard userRole={userRole} />} />
+              <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : userRole === 'parent' ? <ParentDashboard /> : <Dashboard userRole={userRole} />} />
+              <Route path="/tutor-workspace" element={userRole === 'teacher' ? <TutorWorkspace /> : <Navigate to="/dashboard" replace />} />
               {/* Mọi vai trò hợp lệ đều được quản lý hồ sơ và mật khẩu chính chủ. */}
-              <Route path="/profile" element={['student', 'teacher', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
+              <Route path="/profile" element={['student', 'teacher', 'parent', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
               <Route path="/appeals" element={['student', 'teacher'].includes(userRole) ? <AppealPage /> : <Navigate to="/dashboard" replace />} />
               {/* Chi tiết lớp: :id là _id lớp trên URL. */}
               <Route path="/class/:id" element={<ClassDetail />} />

@@ -10,6 +10,8 @@ jest.mock('./pages/LoginPage', () => () => <h1>Đăng nhập kiểm thử</h1>);
 jest.mock('./pages/AdminModeration', () => () => <h1>Quản trị tài khoản kiểm thử</h1>);
 jest.mock('./pages/AdminAccounts', () => () => <h1>Danh sách vai trò kiểm thử</h1>);
 jest.mock('./pages/Dashboard', () => () => <h1>Trang chủ kiểm thử</h1>);
+jest.mock('./pages/ParentDashboard', () => () => <h1>Trang phụ huynh kiểm thử</h1>);
+jest.mock('./pages/TutorWorkspace', () => () => <h1>Không gian gia sư kiểm thử</h1>);
 const act = React.act || legacyAct;
 let container;
 let root;
@@ -29,12 +31,30 @@ afterEach(() => {
   window.history.replaceState({}, '', '/');
 });
 
-test.each(['admin', 'teacher', 'student'])('vai trò %s đã đăng nhập được mở hồ sơ chính chủ', async (role) => {
+test.each(['admin', 'teacher', 'student', 'parent'])('vai trò %s đã đăng nhập được mở hồ sơ chính chủ', async (role) => {
   localStorage.setItem('token', 'synthetic-route-test-token');
   localStorage.setItem('userRole', role);
   await act(async () => root.render(<App />));
   expect(container.textContent).toContain('Hồ sơ chính chủ kiểm thử');
   expect(window.location.pathname).toBe('/profile');
+});
+
+test('phụ huynh vào đúng dashboard của mình', async () => {
+  localStorage.setItem('token', 'synthetic-route-test-token');
+  localStorage.setItem('userRole', 'parent');
+  window.history.replaceState({}, '', '/dashboard');
+  await act(async () => root.render(<App />));
+  expect(container.textContent).toContain('Trang phụ huynh kiểm thử');
+  expect(container.textContent).not.toContain('Trang chủ kiểm thử');
+});
+
+test('phụ huynh không mở được màn hình gia sư', async () => {
+  localStorage.setItem('token', 'synthetic-route-test-token');
+  localStorage.setItem('userRole', 'parent');
+  window.history.replaceState({}, '', '/tutor-workspace');
+  await act(async () => root.render(<App />));
+  expect(window.location.pathname).toBe('/dashboard');
+  expect(container.textContent).toContain('Trang phụ huynh kiểm thử');
 });
 
 test('không có phiên đăng nhập vẫn bị chuyển khỏi hồ sơ sang đăng nhập', async () => {

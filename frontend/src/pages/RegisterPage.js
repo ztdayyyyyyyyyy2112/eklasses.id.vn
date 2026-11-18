@@ -185,6 +185,7 @@ const RegisterPage = ({ onLogin }) => {
             >
               <option value="student"> Học sinh</option>
               <option value="teacher"> Giáo viên/Gia sư</option>
+              <option value="parent"> Phụ huynh</option>
             </select>
           </div>
 

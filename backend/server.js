@@ -96,6 +96,9 @@ app.get('/api/health', (req, res) => {
 // ----- Gắn các nhóm routes -----
 // Mỗi dòng gắn 1 module router vào tiền tố URL tương ứng.
 app.use('/api/auth', require('./routes/auth')); // đăng ký/đăng nhập.
+app.use('/api/guardians', require('./routes/guardians'));
+app.use('/api/tutors', require('./routes/tutors'));
+app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/users', require('./routes/users')); // profile + quản trị admin.
 app.use('/api/student-warnings', require('./routes/studentWarnings'));
 app.use('/api/moderation', require('./routes/moderation')); // phân trang kiểm duyệt dành riêng cho admin.

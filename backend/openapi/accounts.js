@@ -4,7 +4,7 @@ const add = (method, path, summary, schema, options) => {
   paths[path] = { ...paths[path], [method]: operation(method, path,
     path.startsWith('/api/auth') ? 'Authentication' : 'Users', summary, schema, options) };
 };
-const roles = ['student', 'teacher', 'admin'];
+const roles = ['student', 'teacher', 'parent', 'admin'];
 const authUser = object({ id: ref('ObjectId'), name: string(), email: string({ format: 'email' }), role: enumeration(roles) }, ['id', 'name', 'email', 'role']);
 const authResult = message({ token: string({ example: '<JWT returned by successful sign-in>', description: 'HS256 JWT, expires after 7 days. Copy this into Authorize; do not share or commit it.' }), user: authUser });
 const userResult = message({ user: object({ ...authUser.properties, status: enumeration(['pending', 'active', 'inactive', 'left', 'rejected']) }) });

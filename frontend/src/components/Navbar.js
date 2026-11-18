@@ -16,7 +16,7 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
   useEffect(() => {
-    if (!isAuthenticated || !['student', 'teacher'].includes(userRole)) {
+    if (!isAuthenticated || !['student', 'teacher', 'parent'].includes(userRole)) {
       setProfile(null);
       return undefined;
     }
@@ -44,7 +44,7 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
       <div className="navbar-brand">
         <img src={isAuthenticated ? roleLogo : '/logo1.webp'} alt="Eklasses" className={isAuthenticated && ['teacher', 'student'].includes(userRole) ? 'navbar-role-logo' : 'navbar-brand-logo'} />
         {isAuthenticated && userRole === 'admin' && <span className="navbar-role-label">ADMIN</span>}
-        {isAuthenticated && ['student', 'teacher'].includes(userRole) && (
+        {isAuthenticated && ['student', 'teacher', 'parent'].includes(userRole) && (
           <button className="navbar-avatar" type="button" aria-label="Mở hồ sơ cá nhân" onClick={() => go('/profile')}>
             {profile?.avatar && !avatarFailed ? <img src={profile.avatar} alt="" onError={() => setAvatarFailed(true)} /> : <span aria-hidden="true">{firstLetter}</span>}
           </button>
@@ -58,6 +58,7 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
         {isAuthenticated ? <>
           {['student', 'teacher'].includes(userRole) && <NotificationsBell userRole={userRole} pathname={location.pathname} />}
           <button type="button" onClick={() => go(home)}>{userRole === 'admin' ? 'Quản trị lớp' : 'Trang chủ'}</button>
+          {userRole === 'teacher' && <button type="button" onClick={() => go('/tutor-workspace')}>Hồ sơ gia sư & lịch dạy</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/admin/moderation')}>Hồ sơ vi phạm</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/admin/accounts')}>Quản lý tài khoản</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/profile')}>Hồ sơ và mật khẩu</button>}

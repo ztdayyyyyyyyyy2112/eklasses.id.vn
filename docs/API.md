@@ -1,5 +1,7 @@
 # Swagger / OpenAPI của EKLASSES
 
+Trên nhánh thi TDTU, mở Swagger ở `http://127.0.0.1:5000/api/docs`. URL `https://eklasses.id.vn` trong tài liệu cũ là bản môn học, chưa chứa các API demo mới.
+
 Tài liệu được khai báo theo **OpenAPI 3.0.3**, có Swagger UI tự host (không tải JavaScript từ CDN ngoài).
 
 ## Địa chỉ
