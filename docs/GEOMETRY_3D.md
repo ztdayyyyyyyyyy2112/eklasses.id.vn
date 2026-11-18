@@ -32,19 +32,33 @@ Khi rời tab, thu hồi controls, observer, geometry, material, texture và ren
 - Quay video ngắn: mở tab → xoay → zoom → chọn mặt → reset → công thức → mobile/2D.
   Không quay token, mật khẩu hoặc dữ liệu cá nhân thật.
 
-Chưa có video kèm source; không coi checklist là bằng chứng đã kiểm tra
-trên điện thoại thật hoặc production. Kết quả chạy thực tế được báo riêng khi bàn giao.
+Video thực tế: [xoay, zoom, chọn mặt và đặt lại](qa/issue7-prism.webm).
+Video WebM ghép từ các khung hình browser thực ở 6 fps, không có âm thanh;
+không phải dữ liệu học sinh hay kết quả 3D dựng sẵn. Chưa kiểm tra điện thoại thật/production.
+
+Browser QA có thể chạy lại với công cụ Playwright/FFmpeg đã cài ngoài repo:
+
+```powershell
+$env:BROWSER_TOOLS_DIR='C:\path\to\browser-tools'
+$env:FFMPEG_BINARY='C:\path\to\ffmpeg.exe'
+$env:QA_ARTIFACT_DIR='C:\path\to\temporary-artifacts'
+node frontend/scripts/geometry-smoke.cjs
+```
+
+Script phục vụ production build trên loopback; API/lớp QA giả chỉ nằm trong test,
+không sửa backend/DB hoặc thêm dependency. Không dùng token hay dữ liệu người thật.
 
 ## Kết quả kiểm tra trong lần triển khai
 
 - 102 test frontend đạt (16 suite); production build thành công.
 - Edge headless chạy WebGL bằng SwiftShader trên production build với API QA giả
   tại loopback: mô hình tải được, chọn mặt/nút xoay/zoom hoạt động, không có runtime exception.
-- Viewport 320/390/768/1280px không tràn ngang; đã gửi thao tác kéo cảm ứng mô phỏng.
+- Viewport 320/390/768/1280px không tràn ngang; so sánh ảnh canvas trước/sau xác nhận
+  cả kéo chuột và kéo cảm ứng mô phỏng thực sự làm mô hình thay đổi.
 - Ảnh kiểm tra: [desktop](qa/issue7-desktop.png), [mobile giả lập](qa/issue7-mobile.png).
 - Chunk Three.js chưa tải ở tổng quan, chỉ tải sau khi mở học cụ.
 - Mất WebGL context chuyển sang SVG và vô hiệu hóa nút 3D; rời/mở lại tab dựng được mô hình mới.
-- Chưa kiểm chứng điện thoại vật lý, GPU thiết bị thật, pinch zoom trên thiết bị thật,
-  môi trường production hoặc video ngắn. API giả chỉ phục vụ browser QA, không được thêm vào app.
+- Chưa kiểm chứng điện thoại vật lý, GPU thiết bị thật, pinch zoom trên thiết bị thật
+  hoặc môi trường production. Chưa tích hợp #7 vào `tdtu_innovation`; cần review PR riêng.
 - npm install báo 93 lỗ hổng trong cây dependency; chưa chạy audit fix hoặc nâng cấp
   các dependency ngoài Three.js trong issue này.
