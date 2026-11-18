@@ -7,6 +7,17 @@ const modes = enumeration(['online', 'offline']);
 const bookingStatus = enumeration(['pending', 'accepted', 'rejected', 'cancelled']);
 const schemas = {
   TdtuChild: object({ id: ref('ObjectId'), name: string(), avatar: string({ nullable: true }), verifiedAt: date() }),
+  ParentProgress: object({
+    student: object({ id: ref('ObjectId'), name: string() }), fetchedAt: date(), source: string(), timeZone: string(), limit: integer({ maximum: 50 }),
+    summary: object({ totalSessions: integer(), completedSessions: integer(), submittedQuizzes: integer(), gradedQuizzes: integer(),
+      pendingQuizzes: integer(), scoredQuizzes: integer(), averagePercentage: number({ nullable: true, minimum: 0, maximum: 100 }) }),
+    sessions: array(object({ id: ref('ObjectId'), title: string(), className: string(), startsAt: date(), endsAt: date(),
+      status: enumeration(['scheduled', 'ongoing', 'completed', 'cancelled']), updatedAt: date({ nullable: true }),
+      attendance: { ...object({ status: enumeration(['present', 'absent', 'late', 'excused']), checkedInAt: date({ nullable: true }) }), nullable: true } })),
+    quizzes: array(object({ id: ref('ObjectId'), title: string(), className: string(), status: enumeration(['submitted', 'graded']),
+      submittedAt: date({ nullable: true }), gradedAt: date({ nullable: true }), totalScore: number({ nullable: true }), maxScore: number({ nullable: true }),
+      percentage: number({ nullable: true }), feedback: string() })),
+  }),
   TdtuTutor: object({ id: ref('ObjectId'), teacherId: ref('ObjectId'), name: string(), avatar: string({ nullable: true }),
     headline: string(), introduction: string(), subjects: array(string()), grades: array(string()), modes: array(modes),
     hourlyRate: number(), location: string(), availability: array(string()) }),
@@ -20,6 +31,10 @@ const tutorInput = object({ headline: string({ maxLength: 160 }), introduction: 
 ['headline', 'introduction', 'subjects', 'grades', 'modes', 'hourlyRate', 'location', 'availability', 'published']);
 
 add('get', '/api/guardians/children', 'Guardians', 'List only verified linked children', array(ref('TdtuChild')), { roles: ['parent'] });
+add('get', '/api/guardians/children/{studentId}/progress', 'Guardians', 'Read linked child learning progress', ref('ParentProgress'), {
+  roles: ['parent'], errors: [400, 401, 403, 404, 500],
+  description: 'Verified link and active child required; read-only/no-store. Lists latest 50 sessions and 50 submitted/graded quizzes; summary covers all history. Pending scores/feedback, drafts, answers and internal attendance notes are never returned. Mean is the arithmetic mean of valid graded percentages. Dates are ISO instants; display in Asia/Ho_Chi_Minh.',
+});
 
 add('get', '/api/tutors', 'Tutors', 'Search approved public tutors',
   object({ data: array(ref('TdtuTutor')), page: integer(), limit: integer(), total: integer() }),
