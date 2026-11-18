@@ -10,7 +10,29 @@ jest.mock('react-router-dom', () => ({ useNavigate: jest.fn(), useLocation: jest
 jest.mock('./NotificationsBell', () => () => <span>Chuông</span>);
 const act = React.act || legacyAct;
 
-test('mobile menu exposes its state and closes after navigation; profile falls back to initial', async () => {
+// Logo tối ưu phải được dùng cho mọi vai trò, không tải trễ ảnh thương hiệu.
+test.each([
+  [null, false, '/logo1.webp'],
+  ['admin', true, '/logo1.webp'],
+  ['teacher', true, '/GiaoVienLogo.webp'],
+  ['student', true, '/HocSinhLogo.webp'],
+])('logo WebP đúng cho vai trò %s', async (role, authenticated, source) => {
+  global.IS_REACT_ACT_ENVIRONMENT = true;
+  useLocation.mockReturnValue({ pathname: '/dashboard' });
+  useNavigate.mockReturnValue(jest.fn());
+  axios.get.mockResolvedValue({ data: { name: 'An', avatar: '' } });
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  try {
+    await act(async () => root.render(<Navbar userRole={role} isAuthenticated={authenticated} onLogout={jest.fn()} />));
+    const logo = container.querySelector('img[alt="Eklasses"]');
+    expect(logo.getAttribute('src')).toBe(source);
+    expect(logo.getAttribute('loading')).not.toBe('lazy');
+    expect(container.querySelector('.nav-decor img').getAttribute('src')).toBe('/centerlogo.webp');
+  } finally { act(() => root.unmount()); jest.clearAllMocks(); }
+});
+
+test.each(['student', 'teacher'])('%s navbar opens profile without a standalone appeals action on desktop or mobile', async (role) => {
   global.IS_REACT_ACT_ENVIRONMENT = true;
   useLocation.mockReturnValue({ pathname: '/dashboard' });
   const navigate = jest.fn();
@@ -20,11 +42,13 @@ test('mobile menu exposes its state and closes after navigation; profile falls b
   document.body.appendChild(container);
   const root = createRoot(container);
   try {
-    await act(async () => root.render(<Navbar userRole="student" isAuthenticated onLogout={jest.fn()} />));
+    await act(async () => root.render(<Navbar userRole={role} isAuthenticated onLogout={jest.fn()} />));
+    expect(container.textContent).not.toContain('Kháng cáo');
     expect(container.querySelector('.navbar-avatar').textContent).toBe('A');
     const toggle = container.querySelector('.navbar-menu-toggle');
     await act(async () => toggle.click());
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(container.textContent).not.toContain('Kháng cáo');
     await act(async () => [...container.querySelectorAll('#navbar-actions button')].find((button) => button.textContent === 'Trang chủ').click());
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     expect(navigate).toHaveBeenCalledWith('/dashboard');
