@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   // Super Admin gốc luôn bị ép về 'admin'.
   role: {
     type: String,
-    enum: ['teacher', 'student', 'admin'],
+    enum: ['teacher', 'student', 'parent', 'admin'],
     required: true,
   },
   policiesAcceptedAt: Date,

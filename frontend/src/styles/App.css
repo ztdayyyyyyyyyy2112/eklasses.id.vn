@@ -143,9 +143,10 @@ html, body, #root {
 
 .navbar-role-logo {
   display: block;
-  width: min(190px, 38vw);
-  height: 38px;
-  object-fit: contain;
+  width: min(240px, 38vw);
+  height: 48px;
+  object-fit: cover;
+  object-position: center;
 }
 
 .navbar-brand-logo {
@@ -300,6 +301,8 @@ html, body, #root {
 }
 
 .profile-heading,
+.profile-layout,
+.profile-appeals,
 .profile-editor,
 .profile-history {
   width: min(100%, 1040px);
@@ -321,6 +324,92 @@ html, body, #root {
 .profile-heading > p:last-child {
   margin-top: 0.4rem;
   color: #65736c;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.profile-sidebar {
+  padding: 0.75rem;
+  border: 1px solid #d4ded9;
+  border-radius: 8px;
+  background: #fff;
+  color: #234d40;
+}
+
+.profile-menu-group + .profile-menu-group {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #d4ded9;
+}
+
+.profile-menu-label {
+  padding: 0.5rem 0.75rem;
+  color: #65736c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.profile-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-menu-item svg { flex: 0 0 20px; color: #65736c; }
+.profile-menu-item:hover { background: #f1f3f2; }
+.profile-menu-item[aria-current="page"] { background: #fcebed; color: #a4161a; font-weight: 700; }
+.profile-menu-item[aria-current="page"]::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: #e63946;
+}
+.profile-menu-item:focus-visible { outline: 2px solid #a4161a; outline-offset: 2px; }
+
+.profile-panel { min-width: 0; }
+.profile-panel-title { margin-bottom: 1rem; color: #234d40; font-size: 1.2rem; }
+.profile-panel > .profile-history { margin-top: 0; }
+
+.profile-appeals {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid #d4ded9;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.profile-appeals h2 {
+  color: #234d40;
+  font-size: 1.2rem;
+}
+
+.profile-appeals .btn {
+  justify-self: start;
 }
 
 .profile-editor {
@@ -461,7 +550,15 @@ html, body, #root {
   line-height: 1.5;
 }
 
+@media (max-width: 900px) {
+  .profile-editor { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 700px) {
+  .profile-layout { grid-template-columns: 1fr; gap: 1rem; }
+  .profile-menu-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .profile-menu-label { grid-column: 1 / -1; }
+
   .profile-editor {
     grid-template-columns: 1fr;
   }
@@ -716,12 +813,12 @@ input:focus, select:focus, textarea:focus {
   background: #e9e9e9;
 }
 
-/* Lớp nền ảnh background.png phủ kín, mờ nhẹ. */
+/* WebP giảm dung lượng ảnh nền, giữ nguyên kích thước và bố cục form. */
 .auth-container::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('../assets/background.png');
+  background-image: url('../assets/background.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -926,9 +1023,9 @@ input:focus, select:focus, textarea:focus {
   }
 
   .navbar .nav-icon-group { display: none; }
-  .navbar-role-logo { width: min(160px, 42vw); }
+  .navbar-role-logo { width: min(200px, 54vw); height: 44px; }
   .navbar-brand-logo { max-width: 42vw; }
-  .navbar-brand { max-width: calc(100% - 55px); }
+  .navbar-brand { gap: 0.5rem; max-width: calc(100% - 55px); }
   .navbar .navbar-menu-toggle { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-left: auto; font-size: 1.4rem; }
   .navbar-user { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1200; max-height: calc(100dvh - 60px); overflow-y: auto; padding: 0.75rem; background: #a4161a; box-shadow: 0 8px 18px rgba(0,0,0,.2); }
   .navbar-user.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem; }

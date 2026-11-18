@@ -79,7 +79,7 @@ router.post('/register', async (req, res) => {
       name,
       email,
       password, // mật khẩu thô, sẽ được hash trong hook pre-save của model.
-      role: ['teacher', 'student'].includes(role) ? role : 'student',
+      role: ['teacher', 'student', 'parent'].includes(role) ? role : 'student',
       policiesAcceptedAt: new Date(),
       policyVersion: POLICY_VERSION,
       status: role === 'teacher' ? 'pending' : 'active',

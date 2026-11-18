@@ -11,11 +11,12 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
   const [profile, setProfile] = useState(null);
   const [avatarFailed, setAvatarFailed] = useState(false);
   const home = userRole === 'admin' ? '/admin' : '/dashboard';
-  const roleLogo = userRole === 'teacher' ? '/GiaoVienLogo.png' : userRole === 'student' ? '/HocSinhLogo.png' : '/logo1.png';
+  // Logo lossless nhẹ hơn, không tải trễ vì xuất hiện ngay trên màn hình đầu.
+  const roleLogo = userRole === 'teacher' ? '/GiaoVienLogo.webp' : userRole === 'student' ? '/HocSinhLogo.webp' : '/logo1.webp';
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
   useEffect(() => {
-    if (!isAuthenticated || !['student', 'teacher'].includes(userRole)) {
+    if (!isAuthenticated || !['student', 'teacher', 'parent'].includes(userRole)) {
       setProfile(null);
       return undefined;
     }
@@ -39,11 +40,11 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
 
   return (
     <nav className={`navbar${userRole === 'admin' ? ' navbar-admin' : ''}`} aria-label="Điều hướng chính">
-      <div className="nav-icon-group" aria-hidden="true"><div className="nav-decor nav-decor-center"><img src="/centerlogo.png" alt="" /></div></div>
+      <div className="nav-icon-group" aria-hidden="true"><div className="nav-decor nav-decor-center"><img src="/centerlogo.webp" alt="" /></div></div>
       <div className="navbar-brand">
-        <img src={isAuthenticated ? roleLogo : '/logo1.png'} alt="EKLASSES" className={isAuthenticated && ['teacher', 'student'].includes(userRole) ? 'navbar-role-logo' : 'navbar-brand-logo'} />
+        <img src={isAuthenticated ? roleLogo : '/logo1.webp'} alt="Eklasses" className={isAuthenticated && ['teacher', 'student'].includes(userRole) ? 'navbar-role-logo' : 'navbar-brand-logo'} />
         {isAuthenticated && userRole === 'admin' && <span className="navbar-role-label">ADMIN</span>}
-        {isAuthenticated && ['student', 'teacher'].includes(userRole) && (
+        {isAuthenticated && ['student', 'teacher', 'parent'].includes(userRole) && (
           <button className="navbar-avatar" type="button" aria-label="Mở hồ sơ cá nhân" onClick={() => go('/profile')}>
             {profile?.avatar && !avatarFailed ? <img src={profile.avatar} alt="" onError={() => setAvatarFailed(true)} /> : <span aria-hidden="true">{firstLetter}</span>}
           </button>
@@ -56,8 +57,8 @@ const Navbar = ({ userRole, onLogout, isAuthenticated }) => {
         <button type="button" onClick={() => go('/policies')}>Chính sách</button>
         {isAuthenticated ? <>
           {['student', 'teacher'].includes(userRole) && <NotificationsBell userRole={userRole} pathname={location.pathname} />}
-          {['student', 'teacher'].includes(userRole) && <button type="button" onClick={() => go('/appeals')}>Kháng cáo</button>}
           <button type="button" onClick={() => go(home)}>{userRole === 'admin' ? 'Quản trị lớp' : 'Trang chủ'}</button>
+          {userRole === 'teacher' && <button type="button" onClick={() => go('/tutor-workspace')}>Hồ sơ gia sư & lịch dạy</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/admin/moderation')}>Hồ sơ vi phạm</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/admin/accounts')}>Quản lý tài khoản</button>}
           {userRole === 'admin' && <button type="button" onClick={() => go('/profile')}>Hồ sơ và mật khẩu</button>}

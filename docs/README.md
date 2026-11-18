@@ -1,7 +1,10 @@
 # Tài liệu EKLASSES
 
+Demo cuộc thi TDTU dùng repo `ztdayyyyyyyyyy2112/eklasses.id.vn` và nhánh `tdtu_innovation`; xem [TDTU_DEMO.md](TDTU_DEMO.md). Các liên kết production/PR trong tài liệu cũ bên dưới là lịch sử của repo môn học.
+
 | Tài liệu | Nội dung |
 |---|---|
+| [Swagger / OpenAPI](API.md) | Tài liệu API đầy đủ, xác thực JWT, request/response, ví dụ và cách thử an toàn |
 | [Luồng dữ liệu](MONGODB_WORKFLOW.md) | Tài khoản, buổi học, điểm danh và transaction |
 | [Quản lý tài khoản](ADMIN_ACCOUNTS.md) | Tra cứu vai trò/trạng thái và duyệt giáo viên trên giao diện admin |
 | [Hồ sơ và mật khẩu](USER_PRIVACY.md) | Quyền riêng tư, trường được phép trả và [đổi mật khẩu](USER_PRIVACY.md#doi-mat-khau) |
@@ -10,6 +13,7 @@
 | [Kháng cáo và kiểm duyệt](APPEALS.md) | Cảnh báo/chế tài, khóa lớp, lịch sử và [API kiểm duyệt](APPEALS.md#kiem-duyet) |
 | [Hiệu năng](PERFORMANCE.md) | Phân trang, truy vấn, tải frontend và [kết quả đo](PERFORMANCE.md#ket-qua) |
 | [Kiểm tra giao diện](FRONTEND_QA.md) | Bằng chứng FE04/FE11 trên bản build và giới hạn kiểm tra |
+| [Báo cáo phụ huynh](PARENT_PROGRESS.md) | API chỉ đọc, điểm quiz/buổi học thật, quyền liên kết và kiểm thử issue #5 |
 | [Học cụ hình học 3D](GEOMETRY_3D.md) | Prototype một bài lăng trụ, thao tác, fallback 2D và kiểm tra issue #7 |
 | [Công cụ kiểm chứng](PERFORMANCE_LAB.md) | Chạy benchmark, MongoDB integration và Chromium an toàn |
 | [Trạng thái và theo dõi](PROJECT_STATUS.md) | Issue, phát hành, bằng chứng kiểm tra, việc còn lại và bảo trì tài liệu |
@@ -20,4 +24,4 @@
 - Nội dung tiếng Việt; giữ định danh mã nguồn, URL, khóa JSON và giá trị kỹ thuật để khớp hệ thống. Số test gắn với source/thời điểm đã chạy, không tự đại diện cho bản mới.
 - `local/` giữ tài liệu nội bộ, mẫu tham khảo và report thô, được ignore và không có sẵn khi clone; không dọn/xóa dữ liệu trong đó. Mẫu README không phải đặc tả dự án.
 - Các trang chức năng tập trung vào dự án: hành vi, API, sử dụng và kiểm thử. Quá trình hợp nhất tài liệu, trạng thái issue/phát hành và hạn chế kiểm chứng giữ riêng trong [PROJECT_STATUS.md](PROJECT_STATUS.md).
-- Không đưa mật khẩu/token/URI thật vào tài liệu chia sẻ. `/api/docs` chỉ liệt kê endpoint rút gọn, không phải OpenAPI đầy đủ.
+- Không đưa mật khẩu/token/URI thật vào tài liệu chia sẻ. `/api/docs` là Swagger UI; đặc tả máy đọc được nằm tại `/api/openapi.json` (alias `/api/docs.json`).

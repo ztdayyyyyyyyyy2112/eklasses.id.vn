@@ -35,6 +35,10 @@ const ClassDetail = lazy(() => import('./pages/ClassDetail'));
 const QuizTaking = lazy(() => import('./pages/QuizTaking'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const AppealPage = lazy(() => import('./pages/AppealPage'));
+const ParentDashboard = lazy(() => import('./pages/ParentDashboard'));
+const ParentProgress = lazy(() => import('./pages/ParentProgress'));
+const TutorWorkspace = lazy(() => import('./pages/TutorWorkspace'));
+const TutorDetailPage = lazy(() => import('./pages/TutorDetailPage'));
 
 // Trang xác thực đã có logo và điều hướng riêng; không dựng navbar ở hai trang này.
 const RouteNavbar = (props) => {
@@ -83,18 +87,18 @@ const App = () => {
     setUserRole(null);
   };
 
-  // Mảng ảnh watermark nền trang trí (icon mờ chìm dưới nội dung).
+  // Watermark dùng WebP lossless để giảm tải mà giữ nguyên nét và độ trong suốt.
   // Mỗi phần tử gồm src ảnh + class CSS quy định vị trí (wm-1...wm-9).
   const watermarks = [
-    { src: '/icon1.png', className: 'wm wm-1' },
-    { src: '/icon2.png', className: 'wm wm-2' },
-    { src: '/centerlogo.png', className: 'wm wm-3' },
-    { src: '/icon1.png', className: 'wm wm-4' },
-    { src: '/icon2.png', className: 'wm wm-5' },
-    { src: '/centerlogo.png', className: 'wm wm-6' },
-    { src: '/icon1.png', className: 'wm wm-7' },
-    { src: '/icon2.png', className: 'wm wm-8' },
-    { src: '/centerlogo.png', className: 'wm wm-9' },
+    { src: '/icon1.webp', className: 'wm wm-1' },
+    { src: '/icon2.webp', className: 'wm wm-2' },
+    { src: '/centerlogo.webp', className: 'wm wm-3' },
+    { src: '/icon1.webp', className: 'wm wm-4' },
+    { src: '/icon2.webp', className: 'wm wm-5' },
+    { src: '/centerlogo.webp', className: 'wm wm-6' },
+    { src: '/icon1.webp', className: 'wm wm-7' },
+    { src: '/icon2.webp', className: 'wm wm-8' },
+    { src: '/centerlogo.webp', className: 'wm wm-9' },
   ];
 
   return (
@@ -120,6 +124,7 @@ const App = () => {
           {/* Trang đăng ký: tương tự, đăng ký xong tự đăng nhập luôn. */}
           <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
           <Route path="/policies" element={<PoliciesPage />} />
+          <Route path="/tutors/:id" element={<TutorDetailPage />} />
 
           {/* Nếu ĐÃ đăng nhập thì cho vào các trang cần bảo vệ... */}
           {isAuthenticated ? (
@@ -129,9 +134,11 @@ const App = () => {
               <Route path="/admin/moderation" element={userRole === 'admin' ? <AdminModeration /> : <Navigate to="/dashboard" replace />} />
               <Route path="/admin/accounts" element={userRole === 'admin' ? <AdminAccounts /> : <Navigate to="/dashboard" replace />} />
               <Route path="/admin/classes/:id" element={userRole === 'admin' ? <AdminClassDetail /> : <Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : <Dashboard userRole={userRole} />} />
+              <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : userRole === 'parent' ? <ParentDashboard /> : <Dashboard userRole={userRole} />} />
+              <Route path="/tutor-workspace" element={userRole === 'teacher' ? <TutorWorkspace /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/children/:studentId/progress" element={userRole === 'parent' ? <ParentProgress /> : <Navigate to="/dashboard" replace />} />
               {/* Mọi vai trò hợp lệ đều được quản lý hồ sơ và mật khẩu chính chủ. */}
-              <Route path="/profile" element={['student', 'teacher', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
+              <Route path="/profile" element={['student', 'teacher', 'parent', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
               <Route path="/appeals" element={['student', 'teacher'].includes(userRole) ? <AppealPage /> : <Navigate to="/dashboard" replace />} />
               {/* Chi tiết lớp: :id là _id lớp trên URL. */}
               <Route path="/class/:id" element={<ClassDetail />} />

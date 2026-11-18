@@ -78,8 +78,17 @@ const authMiddleware = async (req, res, next) => {
     // Chỉ 'active' (hoặc admin) được giữ phiên. Lưu: token cũ khi user bị
     // chuyển 'inactive'/'left'/'rejected' cũng tự mất quyền mà không cần chờ hết hạn.
     // Tài khoản trên main trước khi thêm vòng đời chưa có trường status.
-    if ((user.status || 'active') !== 'active' || !['teacher', 'student', 'admin'].includes(user.role)) {
+    if ((user.status || 'active') !== 'active' || !['teacher', 'student', 'parent', 'admin'].includes(user.role)) {
       return res.status(403).json({ message: 'Tài khoản đang không hoạt động, vui lòng đăng nhập lại' });
+    }
+
+    // Parent is a separate marketplace role. Legacy class/content routes were
+    // written for three roles; several default to student access otherwise.
+    // Keep parents on explicit parent APIs until each old route is audited.
+    if (user.role === 'parent') {
+      const allowed = ['/api/guardians', '/api/tutors', '/api/bookings'].includes(req.baseUrl)
+        || (req.baseUrl === '/api/users' && ['/profile', '/password'].includes(req.path));
+      if (!allowed) return res.status(403).json({ message: 'Vai trò phụ huynh không có quyền truy cập chức năng này' });
     }
 
     // Gắn danh tính + role MỚI NHẤT từ DB để handler/middleware phía sau dùng.
