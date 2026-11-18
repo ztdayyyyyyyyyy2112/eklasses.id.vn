@@ -20,6 +20,8 @@ const businessRouters = () => [
   ['/api/documents', require('../routes/documents')], ['/api/quizzes', require('../routes/quizzes')],
   ['/api/assignments', require('../routes/assignments')], ['/api/announcements', require('../routes/announcements')],
   ['/api/student-warnings', require('../routes/studentWarnings')], ['/api/moderation', require('../routes/moderation')],
+  ['/api/guardians', require('../routes/guardians')], ['/api/tutors', require('../routes/tutors')],
+  ['/api/bookings', require('../routes/bookings')],
 ];
 
 test('OpenAPI validates locally without external resolution, secrets or undefined references', async () => {
@@ -57,7 +59,7 @@ test('every actual business route has one documented operation, with no invented
       ids.add(item.operationId);
       assert.ok(item.summary && item.description && item.tags.length && item.responses);
       if (item.tags[0] !== 'Diagnostics') documented.push(`${method} ${route}`);
-      assert.deepEqual(item.security, route.startsWith('/api/auth/') || item.tags[0] === 'Diagnostics' ? [] : [{ bearerAuth: [] }]);
+      assert.deepEqual(item.security, route.startsWith('/api/auth/') || route === '/api/tutors' || route === '/api/tutors/{id}' || item.tags[0] === 'Diagnostics' ? [] : [{ bearerAuth: [] }]);
       const placeholderNames = [...route.matchAll(/\{(\w+)\}/g)].map((match) => match[1]);
       const params = (item.parameters || []).filter((param) => param.in === 'path');
       assert.deepEqual(params.map((param) => param.name), placeholderNames);
@@ -73,7 +75,7 @@ test('every actual business route has one documented operation, with no invented
     }
   }
   assert.deepEqual(documented.sort(), actual.sort());
-  assert.equal(actual.length, 76);
+  assert.equal(actual.length, 84);
 });
 
 test('contracts retain distinct pagination, privacy, admission and grading semantics', () => {

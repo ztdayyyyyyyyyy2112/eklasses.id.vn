@@ -1,5 +1,7 @@
 # Tài liệu EKLASSES
 
+Demo cuộc thi TDTU dùng repo `ztdayyyyyyyyyy2112/eklasses.id.vn` và nhánh `tdtu_innovation`; xem [TDTU_DEMO.md](TDTU_DEMO.md). Các liên kết production/PR trong tài liệu cũ bên dưới là lịch sử của repo môn học.
+
 | Tài liệu | Nội dung |
 |---|---|
 | [Swagger / OpenAPI](API.md) | Tài liệu API đầy đủ, xác thực JWT, request/response, ví dụ và cách thử an toàn |

@@ -1,8 +1,10 @@
 # EKLASSES - NỀN TẢNG QUẢN LÝ LỚP HỌC TRỰC TUYẾN (TUTORING PLATFORM)
 
-Chào mừng bạn đến với **EKLASSES** - nền tảng quản lý lớp học trực tuyến cho giáo viên tự do và gia sư, tích hợp đầy đủ **lớp học, video bài giảng, tài liệu, bài kiểm tra trắc nghiệm, bài tập và thông báo** trong một hệ thống duy nhất với 3 phân quyền **Admin / Giáo viên / Học sinh**.
+Chào mừng bạn đến với **EKLASSES** - nền tảng quản lý lớp học trực tuyến và kết nối gia sư, tích hợp **lớp học, video bài giảng, tài liệu, bài kiểm tra, bài tập, thông báo và đặt lịch 1:1** với 4 vai trò **Admin / Giáo viên / Học sinh / Phụ huynh** trên nhánh thi TDTU.
 
 Tài liệu kỹ thuật và hướng dẫn liên quan được tập trung tại [docs/README.md](docs/README.md).
+
+Nhánh thi TDTU: xem [hướng dẫn chạy demo phụ huynh, gia sư và đặt lịch](docs/TDTU_DEMO.md).
 
 Tra cứu nhanh: [quản lý tài khoản](docs/ADMIN_ACCOUNTS.md), [hồ sơ và mật khẩu](docs/USER_PRIVACY.md), [bảo mật](docs/BACKEND_SECURITY.md), [hiệu năng](docs/PERFORMANCE.md). Trạng thái issue, phiên bản phát hành và việc còn lại nằm riêng tại [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md); chức năng trên source không mặc nhiên đã có trên production.
 
@@ -12,16 +14,16 @@ Tra cứu nhanh: [quản lý tài khoản](docs/ADMIN_ACCOUNTS.md), [hồ sơ v�
 
 | Môi trường | Địa chỉ | Ghi chú |
 |------------|---------|---------|
-| Production (domain chính thức) | https://eklasses.id.vn/ | Frontend + API chung một domain, triển khai trên Vercel |
-| Health check (production) | https://eklasses.id.vn/api/health | Kiểm tra backend; không thay kiểm chứng đăng nhập/database |
-| Swagger UI (production) | https://eklasses.id.vn/api/docs | Nhóm API, JWT Authorize, request/response và Try it out |
-| OpenAPI JSON (production) | https://eklasses.id.vn/api/openapi.json | Đặc tả OpenAPI 3.0.3; import vào Postman hoặc client hỗ trợ OpenAPI |
-| Local frontend | `http://localhost:3000` | Chạy bằng `npm start --prefix frontend` |
+| Bản môn học đã deploy (tham khảo) | https://eklasses.id.vn/ | Không phải bản demo nhánh thi TDTU |
+| Health check bản môn học | https://eklasses.id.vn/api/health | Không kiểm tra được chức năng mới của nhánh thi |
+| Swagger UI bản môn học | https://eklasses.id.vn/api/docs | Tài liệu của bản đã deploy |
+| OpenAPI JSON bản môn học | https://eklasses.id.vn/api/openapi.json | Đặc tả của bản đã deploy |
+| Local frontend nhánh thi | `http://127.0.0.1:3000` | Lệnh chạy trong [hướng dẫn demo](docs/TDTU_DEMO.md) |
 | Local backend | `http://localhost:5000` | Chạy bằng `npm run dev --prefix backend` |
 | Health check (local) | `http://localhost:5000/api/health` | Phải trả về `{"status":"ok"}` |
 | Swagger UI (local) | http://localhost:5000/api/docs | Tài liệu và thử API backend local |
 
-Domain chính thức của EKLASSES là **https://eklasses.id.vn/**. Dùng domain này cho truy cập và chia sẻ liên kết; các URL deployment/preview của Vercel có thể thay đổi theo phiên bản. Frontend production gọi API cùng origin qua `/api`, không cần cấu hình URL preview vào `REACT_APP_API_URL`.
+Domain **https://eklasses.id.vn/** hiện phục vụ bản môn học. Chức năng phụ huynh, hồ sơ gia sư và đặt lịch của nhánh thi được kiểm tra trên local trước khi có deployment riêng; không dùng domain cũ để nghiệm thu các issue này. Cấu hình Vercel trong repo là cấu hình kế thừa từ bản môn học và chưa phải bằng chứng đã deploy demo cuộc thi.
 
 Swagger có trên production sau khi triển khai phiên bản chứa thay đổi tài liệu này. **Try it out gửi request thật**; nên dùng local/QA để tránh thay đổi dữ liệu production. Xem [hướng dẫn Swagger/OpenAPI](docs/API.md) về đăng nhập, Authorize, schema, phân quyền và kiểm thử. `/api/docs` nay trả HTML thay cho JSON rút gọn cũ; lấy đặc tả tại `/api/openapi.json` hoặc `/api/docs.json`.
 

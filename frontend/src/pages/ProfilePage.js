@@ -118,7 +118,7 @@ const ProfilePage = () => {
       <header className="profile-heading">
         <p className="admin-eyebrow">TÀI KHOẢN</p>
         <h1>Hồ sơ cá nhân</h1>
-        <p>{role === 'admin' ? 'Quản lý hồ sơ và mật khẩu tài khoản quản trị của bạn.' : role === 'teacher' ? 'Quản lý hồ sơ giáo viên và xem lịch sử xử lý lớp học.' : 'Quản lý hồ sơ học sinh và xem lịch sử cảnh báo.'}</p>
+        <p>{role === 'admin' ? 'Quản lý hồ sơ và mật khẩu tài khoản quản trị của bạn.' : role === 'teacher' ? 'Quản lý hồ sơ giáo viên và xem lịch sử xử lý lớp học.' : role === 'parent' ? 'Quản lý hồ sơ và mật khẩu phụ huynh.' : 'Quản lý hồ sơ học sinh và xem lịch sử cảnh báo.'}</p>
       </header>
 
       <div className="profile-layout">

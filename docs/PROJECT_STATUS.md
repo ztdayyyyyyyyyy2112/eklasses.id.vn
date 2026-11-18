@@ -1,5 +1,7 @@
 # Trạng thái và theo dõi dự án
 
+Tài liệu này ghi lịch sử repo môn học `ThanhVu6102/tutoring-platform`. Trạng thái demo repo thi và hướng dẫn mới ở [TDTU_DEMO.md](TDTU_DEMO.md).
+
 Tập trung lịch sử tích hợp, issue, bằng chứng kiểm tra và việc còn lại. Tài liệu chức năng chỉ giữ hành vi, contract, cách sử dụng và kiểm thử.
 
 ## Phiên bản và issue

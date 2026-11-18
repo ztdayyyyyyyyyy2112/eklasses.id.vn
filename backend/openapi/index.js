@@ -1,5 +1,5 @@
 const { ref, string, date, object, json, operation } = require('./helpers');
-const modules = [require('./accounts'), require('./classes'), require('./learning'), require('./operations')];
+const modules = [require('./accounts'), require('./classes'), require('./learning'), require('./operations'), require('./tdtuDemo')];
 const paths = {};
 const schemas = { ...require('./schemas') };
 for (const part of modules) {
@@ -48,6 +48,8 @@ module.exports = {
     ['Assignments', 'URL submissions, grading and viewer-specific privacy.'], ['Announcements', 'Class announcements and read receipts.'],
     ['StudentWarnings', 'Student warning/appeal/review workflow.'], ['Moderation', 'Administrator totals and paginated review queues.'],
     ['Diagnostics', 'Health and public documentation.'],
+    ['Guardians', 'Verified parent-student links.'], ['Tutors', 'Approved public tutor profiles.'],
+    ['Bookings', 'Transactional private lesson requests.'],
   ].map(([name, description]) => ({ name, description })),
   security: [{ bearerAuth: [] }],
   components: { securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT',
