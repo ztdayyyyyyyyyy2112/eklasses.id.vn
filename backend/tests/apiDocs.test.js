@@ -75,7 +75,7 @@ test('every actual business route has one documented operation, with no invented
     }
   }
   assert.deepEqual(documented.sort(), actual.sort());
-  assert.equal(actual.length, 84);
+  assert.equal(actual.length, 85);
 });
 
 test('contracts retain distinct pagination, privacy, admission and grading semantics', () => {

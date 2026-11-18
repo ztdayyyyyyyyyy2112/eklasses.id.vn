@@ -11,6 +11,7 @@ jest.mock('./pages/AdminModeration', () => () => <h1>Quản trị tài khoản k
 jest.mock('./pages/AdminAccounts', () => () => <h1>Danh sách vai trò kiểm thử</h1>);
 jest.mock('./pages/Dashboard', () => () => <h1>Trang chủ kiểm thử</h1>);
 jest.mock('./pages/ParentDashboard', () => () => <h1>Trang phụ huynh kiểm thử</h1>);
+jest.mock('./pages/ParentProgress', () => () => <h1>Báo cáo con kiểm thử</h1>);
 jest.mock('./pages/TutorWorkspace', () => () => <h1>Không gian gia sư kiểm thử</h1>);
 const act = React.act || legacyAct;
 let container;
@@ -46,6 +47,13 @@ test('phụ huynh vào đúng dashboard của mình', async () => {
   await act(async () => root.render(<App />));
   expect(container.textContent).toContain('Trang phụ huynh kiểm thử');
   expect(container.textContent).not.toContain('Trang chủ kiểm thử');
+});
+
+test.each(['parent', 'student', 'teacher', 'admin'])('chỉ parent mở được báo cáo con, kiểm tra role %s', async (role) => {
+  localStorage.setItem('token', 'synthetic-route-test-token'); localStorage.setItem('userRole', role);
+  window.history.replaceState({}, '', '/children/child-a/progress');
+  await act(async () => root.render(<App />));
+  expect(container.textContent.includes('Báo cáo con kiểm thử')).toBe(role === 'parent');
 });
 
 test('phụ huynh không mở được màn hình gia sư', async () => {

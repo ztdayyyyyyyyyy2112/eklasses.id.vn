@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import '../styles/TdtuDemo.css';
 
 const formatDate = value => new Date(value).toLocaleString('vi-VN');
@@ -73,7 +73,7 @@ const ParentDashboard = () => {
     {error && <p className="tdtu-error" role="alert">{error}</p>}
     {message && <p className="tdtu-success" role="status">{message}</p>}
     <section className="tdtu-panel"><h2>Học sinh đã liên kết</h2>
-      {loadingChildren ? <p role="status">Đang tải học sinh...</p> : children.length ? <div className="tdtu-tags">{children.map(child => <span key={child.id}>{child.name}</span>)}</div>
+      {loadingChildren ? <p role="status">Đang tải học sinh...</p> : children.length ? <div className="tdtu-tags">{children.map(child => <span key={child.id}>{child.name} · <Link to={`/children/${child.id}/progress`}>Xem tiến bộ</Link></span>)}</div>
         : <p>Chưa có học sinh liên kết được xác nhận. Liên hệ quản trị viên để được hỗ trợ.</p>}
     </section>
     <section className="tdtu-panel"><h2>Khám phá gia sư</h2>

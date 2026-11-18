@@ -36,6 +36,7 @@ const QuizTaking = lazy(() => import('./pages/QuizTaking'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const AppealPage = lazy(() => import('./pages/AppealPage'));
 const ParentDashboard = lazy(() => import('./pages/ParentDashboard'));
+const ParentProgress = lazy(() => import('./pages/ParentProgress'));
 const TutorWorkspace = lazy(() => import('./pages/TutorWorkspace'));
 const TutorDetailPage = lazy(() => import('./pages/TutorDetailPage'));
 
@@ -135,6 +136,7 @@ const App = () => {
               <Route path="/admin/classes/:id" element={userRole === 'admin' ? <AdminClassDetail /> : <Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={userRole === 'admin' ? <Navigate to="/admin" replace /> : userRole === 'parent' ? <ParentDashboard /> : <Dashboard userRole={userRole} />} />
               <Route path="/tutor-workspace" element={userRole === 'teacher' ? <TutorWorkspace /> : <Navigate to="/dashboard" replace />} />
+              <Route path="/children/:studentId/progress" element={userRole === 'parent' ? <ParentProgress /> : <Navigate to="/dashboard" replace />} />
               {/* Mọi vai trò hợp lệ đều được quản lý hồ sơ và mật khẩu chính chủ. */}
               <Route path="/profile" element={['student', 'teacher', 'parent', 'admin'].includes(userRole) ? <ProfilePage /> : <Navigate to="/admin" replace />} />
               <Route path="/appeals" element={['student', 'teacher'].includes(userRole) ? <AppealPage /> : <Navigate to="/dashboard" replace />} />

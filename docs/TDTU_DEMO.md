@@ -25,6 +25,7 @@ To reset the demo, stop both app servers, drop only the local `eklasses-tdtu-dem
 2. Select a tutor and submit a 30–180 minute future slot. A conflicting slot is refused. The request appears as `pending`.
 3. Log in as the targeted tutor. Open **Hồ sơ gia sư & lịch dạy**, inspect the request, and accept it. One transaction creates a class and session, enrolls the student, and marks the booking `accepted`.
 4. Log in as the student. The new class is visible. Parent–student links are verified by the local seed/admin; there is no self-link form in this demo.
+5. Submit a quiz as the student and grade it as the responsible teacher. Return to the parent dashboard, select **Xem tiến bộ** next to the child, then reload the report. Submitted work is pending; only graded scores appear in the chart. See [parent progress contract and QA](PARENT_PROGRESS.md). This step does not imply the full #6 UI acceptance/video has been completed.
 
 ## API overview
 
@@ -32,6 +33,7 @@ To reset the demo, stop both app servers, drop only the local `eklasses-tdtu-dem
 | --- | --- | --- |
 | `POST /api/auth/register` | Public | Registers `student`, `teacher`, or `parent`; teacher waits for admin approval. |
 | `GET /api/guardians/children` | Parent | Returns only students with verified links to this parent. |
+| `GET /api/guardians/children/:studentId/progress` | Linked parent | Read-only session/quiz report; latest 50 of each, all-history totals, no answers/drafts/internal notes. |
 | `GET /api/tutors`, `GET /api/tutors/:id` | Public | Lists public profile fields for active, approved teachers only. |
 | `GET /api/tutors/me`, `PUT /api/tutors/me` | Teacher | Reads or edits own tutor profile. |
 | `GET /api/bookings` | Parent or teacher | Lists own bookings only. |
