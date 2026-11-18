@@ -1,0 +1,23 @@
+/* Giới hạn canvas trong thẻ, xếp dọc trên mobile; không áp dụng style ra ngoài bài học. */
+.geometry-lesson { color: #172b3a; min-width: 0; }
+.geometry-eyebrow { color: #a51d29; font-size: .8rem; font-weight: 700; letter-spacing: .06em; }
+.geometry-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.25rem; margin-top: 1rem; }
+.geometry-viewer, .geometry-details { min-width: 0; }
+.geometry-canvas { width: 100%; height: 420px; border-radius: 12px; background: #f2f6fa; overflow: hidden; }
+.geometry-canvas canvas { display: block; touch-action: none; }
+.geometry-viewer svg { display: block; width: 100%; max-height: 420px; }
+.geometry-controls, .geometry-faces { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.geometry-lesson button { min-height: 44px; padding: .6rem .8rem; border: 1px solid #a9b8c5; border-radius: 8px; background: white; color: #172b3a; cursor: pointer; font: inherit; }
+.geometry-lesson button[aria-pressed="true"] { background: #a51d29; border-color: #a51d29; color: white; }
+.geometry-lesson button:disabled { opacity: .5; cursor: not-allowed; }
+.geometry-lesson button:focus-visible, .geometry-lesson input:focus-visible { outline: 3px solid #287fa3; outline-offset: 3px; }
+.geometry-label-toggle { display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.geometry-lesson .geometry-label-toggle input { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; }
+.geometry-details { display: grid; gap: 1rem; align-content: start; }
+.geometry-details h4 { font-size: 1.1rem; margin: 0 0 .75rem; }
+.geometry-formulas { margin: 0; }
+.geometry-formulas dt { font-weight: 700; margin-top: .75rem; }
+.geometry-formulas dd { margin: .25rem 0 0; overflow-wrap: anywhere; }
+.geometry-source { font-size: .85rem; margin-top: 1rem; }
+@media (max-width: 900px) { .geometry-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .geometry-canvas { height: 320px; } .geometry-lesson .card { padding: 1rem; } }

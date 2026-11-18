@@ -7,6 +7,7 @@ import ClassDetail from './ClassDetail';
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({ useParams: () => ({ id: 'class-a' }) }));
 jest.mock('../components/TeacherContentTools', () => () => null);
+jest.mock('../components/geometry/GeometryLesson', () => () => <section>Học cụ lăng trụ thử nghiệm</section>);
 const act = React.act || legacyAct;
 let root;
 let container;
@@ -47,6 +48,17 @@ test('loads resources on demand, uses real totals and retains a previously opene
   await clickTab('Video');
   expect(axios.get).toHaveBeenCalledTimes(3);
   expect(container.textContent).toContain('42 kết quả');
+});
+
+// Học cụ tĩnh không mở truy vấn học liệu hoặc thay đổi dữ liệu lớp.
+test('chỉ mở bài hình học khi chọn tab và không gọi API bổ sung', async () => {
+  await act(async () => root.render(<ClassDetail />));
+  expect(container.textContent).not.toContain('Học cụ lăng trụ thử nghiệm');
+  await act(async () => [...container.querySelectorAll('button')].find((button) => button.textContent === 'Học cụ 3D').click());
+  expect(container.textContent).toContain('Học cụ lăng trụ thử nghiệm');
+  expect(axios.get).toHaveBeenCalledTimes(2);
+  await act(async () => [...container.querySelectorAll('button')].find((button) => button.textContent === 'Tổng Quan').click());
+  expect(container.textContent).not.toContain('Học cụ lăng trụ thử nghiệm');
 });
 
 test('mở bài tập mới gọi chi tiết, đóng trả focus về nút và không tải submissions trong overview', async () => {

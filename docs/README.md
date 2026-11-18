@@ -14,6 +14,7 @@ Demo cuộc thi TDTU dùng repo `ztdayyyyyyyyyy2112/eklasses.id.vn` và nhánh `
 | [Hiệu năng](PERFORMANCE.md) | Phân trang, truy vấn, tải frontend và [kết quả đo](PERFORMANCE.md#ket-qua) |
 | [Kiểm tra giao diện](FRONTEND_QA.md) | Bằng chứng FE04/FE11 trên bản build và giới hạn kiểm tra |
 | [Báo cáo phụ huynh](PARENT_PROGRESS.md) | API chỉ đọc, điểm quiz/buổi học thật, quyền liên kết và kiểm thử issue #5 |
+| [Học cụ hình học 3D](GEOMETRY_3D.md) | Prototype một bài lăng trụ, thao tác, fallback 2D và kiểm tra issue #7 |
 | [Công cụ kiểm chứng](PERFORMANCE_LAB.md) | Chạy benchmark, MongoDB integration và Chromium an toàn |
 | [Trạng thái và theo dõi](PROJECT_STATUS.md) | Issue, phát hành, bằng chứng kiểm tra, việc còn lại và bảo trì tài liệu |
 
