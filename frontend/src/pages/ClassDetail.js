@@ -9,7 +9,7 @@
 // ============================================================================
 
 // Nạp React + hook useState/useEffect.
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 // Nạp useParams để lấy :id lớp trên URL.
 import { useParams } from 'react-router-dom';
 // Nạp axios gọi API.
@@ -19,6 +19,9 @@ import { policyReasonLabels } from '../config/policyLabels';
 import usePagedList from '../hooks/usePagedList';
 import Pagination from '../components/Pagination';
 import AssignmentWorkspace from '../components/AssignmentWorkspace';
+
+// Học cụ độc lập dữ liệu lớp, chỉ tải bộ dựng 3D khi người học mở tab.
+const GeometryLesson = lazy(() => import('../components/geometry/GeometryLesson'));
 
 // Component chi tiết lớp.
 const ClassDetail = () => {
@@ -232,7 +235,7 @@ const ClassDetail = () => {
     );
   }
 
-  const visibleTabs = ['overview', 'videos', 'documents', 'quizzes', 'assignments', 'announcements', 'students']
+  const visibleTabs = ['overview', 'geometry', 'videos', 'documents', 'quizzes', 'assignments', 'announcements', 'students']
     .filter((tab) => tab !== 'students' || userRole === 'teacher' || userRole === 'admin');
 
   return (
@@ -306,6 +309,7 @@ const ClassDetail = () => {
           >
             {/* Nhãn tiếng Việt cho từng tab. */}
             {tab === 'overview' && 'Tổng Quan'}
+            {tab === 'geometry' && 'Học cụ 3D'}
             {tab === 'videos' && 'Video'}
             {tab === 'documents' && 'Tài Liệu'}
             {tab === 'quizzes' && 'Kiểm Tra'}
@@ -317,6 +321,12 @@ const ClassDetail = () => {
       </div>
 
       {lists[activeTab] && <Pagination list={lists[activeTab]} label="học liệu" />}
+
+      {activeTab === 'geometry' && (
+        <Suspense fallback={<p role="status">Đang tải học cụ 3D...</p>}>
+          <GeometryLesson />
+        </Suspense>
+      )}
 
       {/* TAB Tổng Quan: 2 thẻ Thống Kê + Thông Tin Lớp. */}
       {activeTab === 'overview' && (

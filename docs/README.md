@@ -10,6 +10,7 @@
 | [Kháng cáo và kiểm duyệt](APPEALS.md) | Cảnh báo/chế tài, khóa lớp, lịch sử và [API kiểm duyệt](APPEALS.md#kiem-duyet) |
 | [Hiệu năng](PERFORMANCE.md) | Phân trang, truy vấn, tải frontend và [kết quả đo](PERFORMANCE.md#ket-qua) |
 | [Kiểm tra giao diện](FRONTEND_QA.md) | Bằng chứng FE04/FE11 trên bản build và giới hạn kiểm tra |
+| [Học cụ hình học 3D](GEOMETRY_3D.md) | Prototype một bài lăng trụ, thao tác, fallback 2D và kiểm tra issue #7 |
 | [Công cụ kiểm chứng](PERFORMANCE_LAB.md) | Chạy benchmark, MongoDB integration và Chromium an toàn |
 | [Trạng thái và theo dõi](PROJECT_STATUS.md) | Issue, phát hành, bằng chứng kiểm tra, việc còn lại và bảo trì tài liệu |
 
