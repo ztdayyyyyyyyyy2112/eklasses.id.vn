@@ -137,6 +137,8 @@ test('Swagger HTML, spec aliases and self-hosted assets load without authenticat
 
 test('the real server serves documentation before its DB gate but preserves readiness checks', async (t) => {
   const mongoose = require('mongoose');
+  const diagnostics = [];
+  t.mock.method(console, 'error', (...args) => diagnostics.push(args));
   const previousCache = global.mongoose;
   global.mongoose = { conn: null, promise: null };
   let connects = 0;
@@ -167,6 +169,10 @@ test('the real server serves documentation before its DB gate but preserves read
   });
   assert.equal(login.status, 500);
   assert.deepEqual(await login.json(), { message: 'Không kết nối được database. Kiểm tra MONGODB_URI trên Vercel.' });
+  assert.ok(diagnostics.length > 0);
+  for (const entry of diagnostics) {
+    assert.deepEqual(entry, ['[DATABASE_CONNECTION]', 'UNKNOWN_CONNECTION_ERROR']);
+  }
 });
 
 test('Vercel packaging explicitly includes the Swagger asset files', () => {

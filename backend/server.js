@@ -15,6 +15,7 @@ const cors = require('cors');
 // Nạp dotenv để đọc biến môi trường từ file .env (MONGODB_URI, JWT_SECRET...).
 const dotenv = require('dotenv');
 const { cachedConnection } = require('./utils/mongoConnection');
+const { mongoFailureCategory } = require('./utils/mongoDiagnostics');
 
 // Đọc file .env vào process.env (nếu có). Trên Vercel thì lấy từ dashboard.
 dotenv.config();
@@ -56,23 +57,29 @@ if (!cached) {
 //  - B4: Lỗi nối -> reset promise về null và ném lỗi cho nơi gọi xử lý.
 // ----------------------------------------------------------------------------
 const connectDB = cachedConnection(cached,
-  () => {
-    // Trên Vercel không được âm thầm nối localhost khi thiếu cấu hình production.
-    if (process.env.VERCEL && !process.env.MONGODB_URI?.trim()) {
-      throw new Error('MONGODB_URI is required on Vercel');
+  async () => {
+    try {
+      // Trên Vercel không được âm thầm nối localhost khi thiếu cấu hình production.
+      if (process.env.VERCEL && !process.env.MONGODB_URI?.trim()) {
+        throw Object.assign(new Error('MONGODB_URI is required on Vercel'), { code: 'MONGODB_URI_MISSING' });
+      }
+      // Chừa thời gian cold-start và gửi response trước giới hạn 10 giây của Vercel.
+      // Timeout của driver thực sự kết thúc lần chọn server; không chỉ bỏ chờ promise.
+      return await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tutoring-platform', {
+        serverSelectionTimeoutMS: 4000,
+        connectTimeoutMS: 4000,
+      });
+    } catch (error) {
+      // Ghi một nhãn an toàn cho mỗi lần nối thất bại, không log lỗi gốc.
+      console.error('[DATABASE_CONNECTION]', mongoFailureCategory(error));
+      throw error;
     }
-    // Chừa thời gian cold-start và gửi response trước giới hạn 10 giây của Vercel.
-    // Timeout của driver thực sự kết thúc lần chọn server; không chỉ bỏ chờ promise.
-    return mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tutoring-platform', {
-      serverSelectionTimeoutMS: 4000,
-      connectTimeoutMS: 4000,
-    });
   });
 
 // ----- Kích hoạt kết nối ban đầu -----
 // Nếu chạy trực tiếp bằng 'node server.js' thì nối DB ngay khi khởi động.
 if (require.main === module) {
-  connectDB().catch((err) => console.log('MongoDB connection error:', err?.message || err));
+  connectDB().catch(() => {}); // Lỗi đã được ghi bằng nhãn an toàn ở trên.
 } else {
   // Nếu được import (Vercel serverless) thì cũng thử nối nền, lỗi thì bỏ qua
   // để không crash lúc cold-start; request tới sẽ nối lại ở middleware /api.

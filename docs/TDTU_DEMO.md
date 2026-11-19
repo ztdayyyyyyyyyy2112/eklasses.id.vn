@@ -56,3 +56,9 @@ Acceptance depends on MongoDB transactions. Do not use a standalone MongoDB proc
   DB user và Network Access phù hợp hạ tầng Vercel; redeploy sau khi đổi biến.
   Không đưa URI/credential vào ảnh log hoặc Git. Thay đổi timeout không sửa được
   cấu hình Atlas hoặc credential sai; cần kiểm tra health và đăng nhập sau deploy.
+- Khi kết nối lỗi, Runtime Logs ghi `[DATABASE_CONNECTION]` kèm một nhãn cố định:
+  `MISSING_URI`, `AUTH_FAILED`, `DNS_ERROR`, `TLS_ERROR`, `INVALID_URI_OR_OPTIONS`,
+  `NETWORK_ERROR`, `CONNECTION_TIMEOUT` hoặc `UNKNOWN_CONNECTION_ERROR`.
+  Không ghi message/stack/URI/credential; response phía người dùng không thay đổi.
+  Nhãn hỗ trợ phân loại, không khẳng định chính xác cấu hình nào sai; timeout đơn
+  thuần chưa đủ để kết luận Atlas chặn IP. Kiểm thử: `npm run test:mongo-diagnostics --prefix backend`.
