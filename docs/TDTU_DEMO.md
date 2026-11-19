@@ -41,3 +41,18 @@ To reset the demo, stop both app servers, drop only the local `eklasses-tdtu-dem
 | `POST /api/bookings/:id/decision` | Owner parent or targeted teacher | Cancels, rejects, or accepts a pending request. |
 
 Acceptance depends on MongoDB transactions. Do not use a standalone MongoDB process for this demo. Account role and status are checked from the database for every authenticated request.
+
+## Vercel: API timeout / lỗi 504
+
+- Function hiện giới hạn 10 giây. Kết nối MongoDB giới hạn chọn server và mở kết nối
+  ở 4 giây để khi DB không khả dụng, API có thể trả HTTP 500 dạng JSON thay vì bị
+  nền tảng ngắt với `FUNCTION_INVOCATION_TIMEOUT`. Đây không phải giới hạn tổng thời
+  gian cho mọi truy vấn hoặc toàn bộ request.
+- Trên Vercel bắt buộc có `MONGODB_URI`; thiếu cấu hình sẽ bị từ chối ngay, không
+  thử kết nối localhost. Local vẫn giữ cấu hình dự phòng cũ.
+- `/api/health` vẫn kiểm tra DB: chỉ trả OK khi kết nối thành công. Swagger/OpenAPI
+  không cần DB nên có thể trả 200 trong khi health/login lỗi.
+- Kiểm tra biến môi trường đúng scope Production/Preview, cluster Atlas đang chạy,
+  DB user và Network Access phù hợp hạ tầng Vercel; redeploy sau khi đổi biến.
+  Không đưa URI/credential vào ảnh log hoặc Git. Thay đổi timeout không sửa được
+  cấu hình Atlas hoặc credential sai; cần kiểm tra health và đăng nhập sau deploy.

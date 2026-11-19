@@ -56,7 +56,18 @@ if (!cached) {
 //  - B4: Lỗi nối -> reset promise về null và ném lỗi cho nơi gọi xử lý.
 // ----------------------------------------------------------------------------
 const connectDB = cachedConnection(cached,
-  () => mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tutoring-platform'));
+  () => {
+    // Trên Vercel không được âm thầm nối localhost khi thiếu cấu hình production.
+    if (process.env.VERCEL && !process.env.MONGODB_URI?.trim()) {
+      throw new Error('MONGODB_URI is required on Vercel');
+    }
+    // Chừa thời gian cold-start và gửi response trước giới hạn 10 giây của Vercel.
+    // Timeout của driver thực sự kết thúc lần chọn server; không chỉ bỏ chờ promise.
+    return mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tutoring-platform', {
+      serverSelectionTimeoutMS: 4000,
+      connectTimeoutMS: 4000,
+    });
+  });
 
 // ----- Kích hoạt kết nối ban đầu -----
 // Nếu chạy trực tiếp bằng 'node server.js' thì nối DB ngay khi khởi động.

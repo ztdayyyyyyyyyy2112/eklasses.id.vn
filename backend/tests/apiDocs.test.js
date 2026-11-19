@@ -140,7 +140,12 @@ test('the real server serves documentation before its DB gate but preserves read
   const previousCache = global.mongoose;
   global.mongoose = { conn: null, promise: null };
   let connects = 0;
-  t.mock.method(mongoose, 'connect', async () => { connects++; throw new Error('test database unavailable'); });
+  t.mock.method(mongoose, 'connect', async (uri, options) => {
+    connects++;
+    assert.equal(options.serverSelectionTimeoutMS, 4000);
+    assert.equal(options.connectTimeoutMS, 4000);
+    throw new Error('test database unavailable: private-database-details');
+  });
   const filename = require.resolve('../server');
   delete require.cache[filename];
   t.after(() => { global.mongoose = previousCache; delete require.cache[filename]; });
@@ -155,6 +160,13 @@ test('the real server serves documentation before its DB gate but preserves read
   assert.equal(health.status, 500);
   assert.ok(connects > before);
   assert.match(health.headers.get('cache-control'), /private/);
+  assert.deepEqual(await health.json(), { message: 'Không kết nối được database. Kiểm tra MONGODB_URI trên Vercel.' });
+  // Đăng nhập cũng phải trả JSON có kiểm soát, không lọt vào handler khi DB lỗi.
+  const login = await fetch(`${origin}/api/auth/login`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+  });
+  assert.equal(login.status, 500);
+  assert.deepEqual(await login.json(), { message: 'Không kết nối được database. Kiểm tra MONGODB_URI trên Vercel.' });
 });
 
 test('Vercel packaging explicitly includes the Swagger asset files', () => {
