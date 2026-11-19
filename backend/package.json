@@ -11,6 +11,7 @@
     "test:demo": "node scripts/smoke-tdtu-demo.js",
     "test": "node --test tests/accounts.test.js tests/adminSecurity.test.js tests/jwtSecurity.test.js tests/quizGrading.test.js tests/assignmentPrivacy.test.js tests/assignmentValidation.test.js tests/redirectSecurity.test.js tests/sessions.test.js tests/mainCompatibility.test.js tests/userPrivacy.test.js tests/performance.test.js tests/appeals.test.js tests/changePassword.test.js tests/performanceLab.test.js tests/performanceCodeLab.test.js tests/moderation.test.js tests/apiDocs.test.js tests/parentProgress.test.js",
     "test:docs": "node --test tests/apiDocs.test.js",
+    "test:mongo-diagnostics": "node --test tests/mongoDiagnostics.test.js",
     "test:progress": "node --test tests/parentProgress.test.js",
     "test:progress:integration": "node --test tests/parentProgress.integration.test.js",
     "test:progress:browser": "node scripts/progress-ui-smoke.js",
